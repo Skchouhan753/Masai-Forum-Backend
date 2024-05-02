@@ -15,7 +15,7 @@ app.use(cors());
 
 
 
-app.use("/user", userRuter);
+app.use("/api", userRuter);
 
 
 app.get("/", (req, res) => {

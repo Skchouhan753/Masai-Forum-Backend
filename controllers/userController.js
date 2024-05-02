@@ -59,7 +59,7 @@ const loginController = async (req, res) => {
     const { email, password } = req.body;
     //validation
     if (!email || !password) {
-      return res.status(500).json({
+      return res.status(400).json({
         success: false,
         message: "wrong email or password",
       });
@@ -67,7 +67,6 @@ const loginController = async (req, res) => {
     // check user
     const user = await userModel.findOne({ email });
     //user valdiation
-    const { avatar, _id} = user;
     if (!user) {
       return res.status(404).json({
         success: false,
@@ -95,18 +94,21 @@ const loginController = async (req, res) => {
           success: true,
           message: "Login Successfully",
           token,
-          avatar,
-          _id,
+          avatar:user.avatar,
+          _id:user._id,
         });
       } else {
-        res.status(400).json({ msg: "wrong password" });
+        res.status(400).json({
+          success: false,
+          message: "Invalid password",
+        });
       }
     });
   } catch (error) {
     // console.log(error);
     res.status(500).send({
       success: "false",
-      message: "Error In Login Api",
+      message: "Error In Login",
       error,
     });
   }
@@ -116,7 +118,7 @@ const loginController = async (req, res) => {
 const getUserProfileController = async (req, res) => {
   try {
     const { email } = req.body;
-    const user = await userModel.findOne({email});
+    const user = await userModel.findOne({ email });
     user.password = undefined;
     res.status(200).send({
       success: true,
